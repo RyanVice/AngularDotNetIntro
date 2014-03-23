@@ -189,6 +189,72 @@ angular.module('app', [])
     ];
 });
 
+////////////////////////////////////////////////////////////////////////////
+DEMO: Cart Part 2 - Total
+
+// index.cshtml
+<div ng-app="app" ng-controller="mainCtrl">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Price</td>
+                        <td>Quantity</td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in items">
+                        <td>{{item.name}}</td>
+                        <td>{{item.price | currency}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>
+                            <button class="button-primary">Delete</button>
+                            <button class="button-primary">Edit</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            Total: {{ getTotal() | currency }}
+        </div>
+    </div>
+</div>
+
+// app.js
+'use strict';
+
+angular.module('app', [])
+    .controller('mainCtrl', function ($scope) {
+        $scope.items = [
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ];
+
+        $scope.getTotal = function () {
+            var total = 0;
+            $scope.items.forEach(function (item) {
+                total = total + (item.price * item.quantity);
+            });
+            return total;
+        };
+    });
+
+// tests.js
 /// <reference path="../angular.js" />
 /// <reference path="../angular-resource.min.js" />
 /// <reference path="../angular-route.min.js" />
@@ -224,10 +290,6 @@ describe("When using the shopping cart", function () {
         expect(scope.getTotal()).toBe(203.93);
     });
 });
-
-////////////////////////////////////////////////////////////////////////////
-DEMO: Cart Part 2 - Total
-
 
 ////////////////////////////////////////////////////////////////////////////
 DEMO: Cart 
