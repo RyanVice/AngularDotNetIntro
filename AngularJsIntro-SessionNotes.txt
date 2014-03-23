@@ -1,0 +1,236 @@
+////////////////////////////////////////////////////////////////////////////
+DEMO: Hello Angular - Part 1
+
+1) Create new Web API project
+2) Install-Package angularjs
+3) Install-Package bootstrap
+4) Update _Layout.chtml to add bootstrap.css and angular.cs
+
+// _Layout.chtml
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/angular.js"></script>
+</body>
+</html>
+
+// Index.cshtml
+<div ng-app>
+    {{ "Hello " + " AngularJs" }}
+</div>
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Hello Angular - Part 2
+
+// Index.cshtml
+<div ng-app>
+        <input ng-model="message"/>Hello {{message}}/>
+</div>
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Compare Input - Part 1
+// Index.cshtml
+<div ng-app>
+    <input type="text" ng-model="input1" />
+    <input type="text" ng-model="input2" />
+    <span class="glyphicon glyphicon-ok" ng-show="input1 && input2 && input1 === input2"></span>
+    <span class="glyphicon glyphicon-remove" ng-show="input1 && input2 && input1 !== input2"></span>
+</div>
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Compare Input
+// Index.cshtml
+<div ng-app="app">
+    <div ng-controller="mainCtrl">
+        <input type="text" ng-model="input1" ng-change="compareInput()"/>
+        <input type="text" ng-model="input2" ng-change="compareInput()"/>
+        <span class="{{iconClass}}"></span>
+    </div>
+</div>
+
+// app.js
+'use strict';
+
+angular.module('app', [])
+    .controller('mainCtrl', function ($scope) {
+        $scope.compareInput = function () {
+            if (($scope.input1) && ($scope.input2)) {
+                if ($scope.input1 === $scope.input2) {
+                    $scope.iconClass = "glyphicon glyphicon-ok";
+                } else {
+                    $scope.iconClass = "glyphicon glyphicon-remove";
+                }
+            }
+        };
+    });
+	
+// test.js
+/// <reference path="../angular.js" />
+/// <reference path="../angular-resource.min.js" />
+/// <reference path="../angular-route.min.js" />
+/// <reference path="../angular-mocks.js" />
+/// <reference path="../app/app.js" />
+describe("When calling compareInput", function () {
+    var mainCtrl, scope;
+    beforeEach(module("app"));
+    beforeEach(inject(function ($rootScope, $controller) {
+        scope = $rootScope.$new();
+        mainCtrl = $controller("mainCtrl", { $scope: scope });
+    }));
+
+    it("should set iconClass to empty string when input1 or input2 are falsy", function () {
+        scope.input1 = "";
+        scope.input2 = "";
+        scope.compareInput();
+        expect(scope.iconClass).toBe("");
+
+        scope.input1 = "a";
+        scope.compareInput();
+        expect(scope.iconClass).toBe("");
+
+        scope.input1 = "";
+        scope.input2 = "a";
+        scope.compareInput();
+        expect(scope.iconClass).toBe("");
+    });
+
+    it("should set iconClass to 'glyphicon glyphicon-ok' when input1 and input2 match", function () {
+        scope.input1 = "a";
+        scope.input2 = "a";
+        scope.compareInput();
+        expect(scope.iconClass).toBe("glyphicon glyphicon-ok");
+    });
+
+    it("should set iconClass to 'glyphicon glyphicon-remove' when input1 and input2 match", function () {
+        scope.input1 = "a";
+        scope.input2 = "b";
+        scope.compareInput();
+        expect(scope.iconClass).toBe("glyphicon glyphicon-remove");
+    });
+});
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Cart Part 1 - Basic Functionality
+
+// Index.cshtml
+<div ng-app="app" ng-controller="mainCtrl">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Actions</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in items">
+                    <td>{{item.name}}</td>
+                    <td>{{item.price | currency}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>
+                        <button class="button-primary">Delete</button>
+                        <button class="button-primary">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+// app.js
+'use strict';
+
+angular.module('app', [])
+    .controller('mainCtrl', function ($scope) {
+    $scope.items = [
+        {
+            name: "Blocks",
+            quantity: 2,
+            price: 14.99
+        },
+        {
+            name: "Nabi 2",
+            quantity: 1,
+            price: 149.99
+        },
+        {
+            name: "Tin Robot",
+            quantity: 4,
+            price: 5.99
+        }
+    ];
+
+
+});
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Cart 
+// Index Markup
+<div ng-controller="shoppingCartCtrl">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Actions</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in items">
+                    <td>{{item.name}}</td>
+                    <td>{{item.price | currency}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>
+                        <button class="button-primary" ng-click="deleteItem($index)">Delete</button>
+                        <button class="button-primary" ng-click="editItem($index)">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2>Add To Cart</h2>
+
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>
+                <input type="text" ng-model="item.name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Price</td>
+            <td>
+                <input type="text" ng-model="item.price"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Quantity</td>
+            <td>
+                <input type="text" ng-model="item.quantity"/>
+            </td>
+        </tr>
+    </table>
+    <button class="button-primary" ng-click="addItem()" ng-hide="item.name">Add</button>
+    <button class="button-primary" ng-click="updateItem()" ng-hide="!item.name">Update</button>
+</div>
