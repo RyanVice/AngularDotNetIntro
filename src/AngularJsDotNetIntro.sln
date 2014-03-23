@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularSpaTest3", "AngularSpaTest3\AngularSpaTest3.csproj", "{E483B35A-422F-47CA-A9C2-349270F084D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularJsDotNetIntro", "AngularJsDotNetIntro\AngularJsDotNetIntro.csproj", "{E483B35A-422F-47CA-A9C2-349270F084D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
