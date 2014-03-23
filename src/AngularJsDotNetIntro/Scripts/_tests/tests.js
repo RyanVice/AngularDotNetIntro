@@ -3,7 +3,7 @@
 /// <reference path="../angular-route.min.js" />
 /// <reference path="../angular-mocks.js" />
 /// <reference path="../app/app.js" />
-describe("When calling compareInput", function () {
+describe("When using the shopping cart", function () {
     var mainCtrl, scope;
     beforeEach(module("app"));
     beforeEach(inject(function ($rootScope, $controller) {
@@ -11,33 +11,25 @@ describe("When calling compareInput", function () {
         mainCtrl = $controller("mainCtrl", { $scope: scope });
     }));
 
-    it("should set iconClass to empty string when input1 or input2 are falsy", function () {
-        scope.input1 = "";
-        scope.input2 = "";
-        scope.compareInput();
-        expect(scope.iconClass).toBe("");
+    it("should have an accurate total.", function () {
+        scope.items = [
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ];
 
-        scope.input1 = "a";
-        scope.compareInput();
-        expect(scope.iconClass).toBe("");
-
-        scope.input1 = "";
-        scope.input2 = "a";
-        scope.compareInput();
-        expect(scope.iconClass).toBe("");
-    });
-
-    it("should set iconClass to 'glyphicon glyphicon-ok' when input1 and input2 match", function () {
-        scope.input1 = "a";
-        scope.input2 = "a";
-        scope.compareInput();
-        expect(scope.iconClass).toBe("glyphicon glyphicon-ok");
-    });
-
-    it("should set iconClass to 'glyphicon glyphicon-remove' when input1 and input2 match", function () {
-        scope.input1 = "a";
-        scope.input2 = "b";
-        scope.compareInput();
-        expect(scope.iconClass).toBe("glyphicon glyphicon-remove");
+        expect(scope.getTotal()).toBe(203.93);
     });
 });
