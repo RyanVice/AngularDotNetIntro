@@ -1,7 +1,28 @@
-﻿<div ng-app="app">
-    <div ng-controller="mainCtrl">
-        <input type="text" ng-model="input1" ng-change="compareInput()" />
-        <input type="text" ng-model="input2" ng-change="compareInput()" />
-        <span class="{{iconClass}}"></span>
+﻿<div ng-app="app" ng-controller="mainCtrl">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Actions</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in items">
+                    <td>{{item.name}}</td>
+                    <td>{{item.price | currency}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>
+                        <button class="button-primary">Delete</button>
+                        <button class="button-primary">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+

@@ -2,16 +2,21 @@
 
 angular.module('app', [])
     .controller('mainCtrl', function ($scope) {
-
-        $scope.compareInput = function () {
-            if (($scope.input1) && ($scope.input2)) {
-                if ($scope.input1 === $scope.input2) {
-                    $scope.iconClass = "glyphicon glyphicon-ok";
-                } else {
-                    $scope.iconClass = "glyphicon glyphicon-remove";
-                }
-            } else {
-                $scope.iconClass = "";
+        $scope.items = [
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
             }
-        };
+        ];
     });
