@@ -294,6 +294,40 @@ describe("When using the shopping cart", function () {
 ////////////////////////////////////////////////////////////////////////////
 DEMO: Cart 
 // Index Markup
+<button class="button-primary" ng-click="deleteItem($index)">Delete</button>
+
+// app.js
+$scope.deleteItem = function (index) {
+            $scope.items.splice(index, 1);
+        };
+		
+// test.js
+it("should have an accurate total after a delete.", function () {
+        scope.items = [
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ];
+
+        scope.deleteItem(1);
+        expect(scope.getTotal()).toBe(53.94);
+    });
+
+////////////////////////////////////////////////////////////////////////////
+DEMO: Cart 
+// Index Markup
 <div ng-controller="shoppingCartCtrl">
     <div class="row">
         <div class="col-md-6">

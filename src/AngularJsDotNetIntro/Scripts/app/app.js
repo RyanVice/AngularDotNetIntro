@@ -27,4 +27,8 @@ angular.module('app', [])
             });
             return total;
         };
+
+        $scope.deleteItem = function (index) {
+            $scope.items.splice(index, 1);
+        };
     });
