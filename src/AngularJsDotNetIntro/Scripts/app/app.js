@@ -19,4 +19,12 @@ angular.module('app', [])
                 price: 5.99
             }
         ];
+
+        $scope.getTotal = function () {
+            var total = 0;
+            $scope.items.forEach(function (item) {
+                total = total + (item.price * item.quantity);
+            });
+            return total;
+        };
     });
