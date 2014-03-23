@@ -76,7 +76,19 @@ angular.module('app', [])
         };
     });
 	
-// test.js
+// test.js - take one
+/// <reference path="../angular.js" />
+/// <reference path="../angular-resource.min.js" />
+/// <reference path="../angular-route.min.js" />
+/// <reference path="../angular-mocks.js" />
+/// <reference path="../app/app.js" />
+describe("When writing a test", function () {
+    it("should pass or fail based on the logic below.", function () {
+        expect(true).toBe(false);
+    });
+});
+
+// test.js - take two
 /// <reference path="../angular.js" />
 /// <reference path="../angular-resource.min.js" />
 /// <reference path="../angular-route.min.js" />
