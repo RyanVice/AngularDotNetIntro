@@ -292,7 +292,7 @@ describe("When using the shopping cart", function () {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-DEMO: Cart 
+DEMO: Cart Part 3 - Delete
 // Index Markup
 <button class="button-primary" ng-click="deleteItem($index)">Delete</button>
 
