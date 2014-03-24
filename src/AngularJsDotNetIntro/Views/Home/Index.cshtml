@@ -16,15 +16,47 @@
                         <td>{{item.price | currency}}</td>
                         <td>{{item.quantity}}</td>
                         <td>
-                            <button class="button-primary" 
-                                ng-click="deleteItem($index)">Delete</button>
-                            <button class="button-primary">Edit</button>
+                            <button class="button-primary"
+                                ng-click="deleteItem($index)">
+                                Delete</button>
+                            <button class="button-primary"
+                                ng-click="editItem($index)">Edit</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
             Total: {{ getTotal() | currency }}
         </div>
+    </div>
+    <div>
+        <h2>Details</h2>
+
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>
+                    <input type="text" ng-model="item.name" />
+                </td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td>
+                    <input type="text" ng-model="item.price" />
+                </td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>
+                    <input type="text" ng-model="item.quantity" />
+                </td>
+            </tr>
+        </table>
+        <button class="button-primary" 
+            ng-click="addItem()" 
+            ng-show="!updating">Add</button>
+        <button class="button-primary" 
+                ng-click="updateItem()" 
+            ng-show="updating">Update</button>
     </div>
 </div>
 
