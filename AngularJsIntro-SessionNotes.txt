@@ -515,3 +515,317 @@ DEMO: Cart Part 4 - Add\Edit
          quantity: $scope.item.quantity
      });
  };
+ 
+ ////////////////////////////////////////////////////////////////////////////
+DEMO: Cart Part 5 - Cart Icon
+ // _layout.cshtml - just adding the menu without the controller
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <a class="navbar-brand" href="#">Cart Demo</a>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">
+                <span class="glyphicon glyphicon-shopping-cart"></span>{{numberInCart}}
+            </a></li>
+        </ul>
+    </nav>
+	
+// app.js - refactored to use service
+'use strict';
+
+angular.module('app', [])
+    .controller('mainCtrl', function ($scope, cartSrv) {
+        $scope.updating = false;
+        $scope.item = {};
+        $scope.items = cartSrv.items;
+        $scope.getTotal = cartSrv.getTotal;
+
+        $scope.deleteItem = function (index) {
+            cartSrv.deleteItem(index);
+        }
+
+        $scope.addItem = function () {
+            cartSrv.addItem($scope.item);
+            $scope.item = {};
+        }
+
+        $scope.updateItem = function () {
+            cartSrv.updateItem($scope.item);
+
+            $scope.item = null;
+            $scope.updating = false;
+        };
+
+        $scope.editItem = function (index) {
+            $scope.updating = true;
+
+            $scope.item.id = $scope.items[index].id;
+            $scope.item.name = $scope.items[index].name;
+            $scope.item.price = $scope.items[index].price;
+            $scope.item.quantity = $scope.items[index].quantity;
+        };
+    })
+    .controller('navBarCtrl', function ($scope, cartSrv) {
+        $scope.items = cartSrv.items;
+        $scope.numberInCart = cartSrv.items.length;
+
+        $scope.$watch('items', function (items) {
+            $scope.numberInCart = items.length;
+        }, true);
+    })
+    .factory('cartSrv', function () {
+        var nextItemId = 1;
+        var items = [
+            {
+                id: nextItemId++,
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                id: nextItemId++,
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                id: nextItemId++,
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ];
+
+        var getTotal = function () {
+            var total = 0;
+            items.forEach(function (item) {
+                total = total + (item.price * item.quantity);
+            });
+            return total;
+        };
+
+        var deleteItem = function (index) {
+            items.splice(index, 1);
+        };
+
+        var updateItem = function (item) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].id === item.id) {
+                    items[i] = item;
+                    break;
+                }
+            }
+        };
+
+        var addItem = function (item) {
+            item.id = nextItemId;
+            if (items === null)
+                items = [item];
+            else
+                items.push(item);
+
+            return nextItemId++;
+        };
+
+        var emtpyCart = function () {
+            items = null;
+        };
+
+        var addItems = function (itemsToAdd) {
+            itemsToAdd.forEach(function (item) {
+                addItem(item);
+            });
+        };
+
+        var getItem = function (id) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].id === id) 
+                    return items[i];
+            }
+            return null;
+        };
+
+        return {
+            items: items,
+            deleteItem: deleteItem,
+            addItem: addItem,
+            updateItem: updateItem,
+            getTotal: getTotal,
+            emtpyCart: emtpyCart,
+            addItems: addItems,
+            getItem: getItem
+        }
+    });
+
+// test.js
+/// <reference path="../angular.js" />
+/// <reference path="../angular-resource.min.js" />
+/// <reference path="../angular-route.min.js" />
+/// <reference path="../angular-mocks.js" />
+/// <reference path="../app/app.js" />
+describe("When using the shopping cart", function () {
+    var mainCtrl, scope, cartSrvTesting;
+    beforeEach(module("app"));
+    beforeEach(inject(function ($rootScope, $controller, cartSrv) {
+        scope = $rootScope.$new();
+        cartSrvTesting = cartSrv;
+        mainCtrl = $controller("mainCtrl", { $scope: scope });
+    }));
+
+    it("should have an accurate total.", function () {
+        cartSrvTesting.emtpyCart();
+        cartSrvTesting.addItems([
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ]);
+
+        expect(scope.getTotal()).toBe(203.93);
+    });
+
+    it("should have an accurate total after a delete.", function () {
+        cartSrvTesting.emtpyCart();
+        cartSrvTesting.addItems([
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 14.99
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 149.99
+            },
+            {
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.99
+            }
+        ]);
+
+        scope.deleteItem(1);
+        expect(scope.getTotal()).toBe(53.94);
+    });
+
+    it("should have an accurate total after an edit.", function () {
+        cartSrvTesting.emtpyCart();
+        cartSrvTesting.addItems([
+            {
+                name: "Blocks",
+                quantity: 2,
+                price: 20.00
+            },
+            {
+                name: "Nabi 2",
+                quantity: 1,
+                price: 150.00
+            }
+        ]);
+
+        var expectedId = cartSrvTesting.addItem({
+            name: "Tin Robot",
+            quantity: 4,
+            price: 5.00
+        });
+
+        expect(scope.getTotal()).toBe(210);
+
+        var expectedName = "Tin Robot Changed";
+        var expectedQuantity = 5;
+        var expectedPrice = 10.00;
+        scope.item = {
+            id: expectedId,
+            name: expectedName,
+            quantity: expectedQuantity,
+            price: expectedPrice
+        };
+
+        scope.updateItem();
+
+        var actualItem = cartSrvTesting.getItem(expectedId);
+        expect(actualItem.name).toBe(expectedName);
+        expect(actualItem.quantity).toBe(expectedQuantity);
+        expect(actualItem.price).toBe(expectedPrice);
+        expect(scope.getTotal()).toBe(240);
+    });
+
+    it("should have an accurate total after an add.", function () {
+        cartSrvTesting.emtpyCart();
+        cartSrvTesting.addItems([
+            {
+                id: 1,
+                name: "Blocks",
+                quantity: 2,
+                price: 20.00
+            },
+            {
+                id: 2,
+                name: "Nabi 2",
+                quantity: 1,
+                price: 150.00
+            },
+            {
+                id: 3,
+                name: "Tin Robot",
+                quantity: 4,
+                price: 5.00
+            }
+        ]);
+
+        expect(scope.getTotal()).toBe(210);
+
+        var expectedName = "Lego";
+        var expectedQuantity = 2;
+        var expectedPrice = 10.00;
+        scope.item = {
+            name: expectedName,
+            quantity: expectedQuantity,
+            price: expectedPrice
+        };
+
+        scope.addItem();
+        expect(scope.getTotal()).toBe(230);
+    });
+
+    it("should not be updating after loading.", function () {
+        expect(scope.updating).toBe(false);
+    });
+
+    it("should got from adding to editing and back when clicking edit and then update.", function () {
+        expect(scope.updating).toBe(false);
+
+        cartSrvTesting.emtpyCart();
+        cartSrvTesting.addItems([
+            {
+                id: 1,
+                name: "Blocks",
+                quantity: 2,
+                price: 20.00
+            }
+        ]);
+
+        scope.editItem(0);
+
+        expect(scope.updating).toBe(true);
+
+        scope.item = {
+            name: "Blocks changed",
+            quantity: 2,
+            price: 20.00
+        };
+
+        scope.updateItem();
+
+        expect(scope.updating).toBe(false);
+    });
+});
