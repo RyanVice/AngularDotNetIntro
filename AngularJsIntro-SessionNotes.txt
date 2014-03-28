@@ -828,3 +828,32 @@ describe("When using the shopping cart", function () {
         expect(scope.updating).toBe(false);
     });
 });
+
+ ////////////////////////////////////////////////////////////////////////////
+DEMO: Cart Part 6 - Currency and Directives
+// app.js
+.directive('vCurrency', function () {
+        return {
+            link: function (scope, element) {
+                element.bind('keypress', function (evt) {
+                    var charCode = (evt.which) ? evt.which : event.keyCode;
+                    if (charCode > 31
+                        && (charCode != 46
+                            && (charCode < 48 || charCode > 57)))
+                        return false;
+                    return true;
+                });
+            }
+        };
+    }).directive('vCartIcon', function () {
+        return {
+            restrict: 'E',
+            template: '<span class="glyphicon glyphicon-shopping-cart"></span>{{numberInCart}}'
+        };
+    });
+	
+// Index.cshtml
+<input type="text" v-currency ng-model="item.price" />
+
+// _Layout.cshtml
+<v-cart-icon />

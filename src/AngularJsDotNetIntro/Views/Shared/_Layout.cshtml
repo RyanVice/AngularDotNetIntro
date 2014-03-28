@@ -8,12 +8,12 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body  ng-app="app">
+<body ng-app="app">
     <nav ng-controller="navBarCtrl" class="navbar navbar-default navbar-fixed-top" role="navigation">
         <a class="navbar-brand" href="#">Cart Demo</a>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#">
-                <span class="glyphicon glyphicon-shopping-cart"></span>{{numberInCart}}
+                <v-cart-icon />
             </a></li>
         </ul>
     </nav>

@@ -103,7 +103,7 @@ angular.module('app', [])
 
         var getItem = function (id) {
             for (var i = 0; i < items.length; i++) {
-                if (items[i].id === id) 
+                if (items[i].id === id)
                     return items[i];
             }
             return null;
@@ -119,4 +119,23 @@ angular.module('app', [])
             addItems: addItems,
             getItem: getItem
         }
+    })
+    .directive('vCurrency', function () {
+        return {
+            link: function (scope, element) {
+                element.bind('keypress', function (evt) {
+                    var charCode = (evt.which) ? evt.which : event.keyCode;
+                    if (charCode > 31
+                        && (charCode != 46
+                            && (charCode < 48 || charCode > 57)))
+                        return false;
+                    return true;
+                });
+            }
+        };
+    }).directive('vCartIcon', function () {
+        return {
+            restrict: 'E',
+            template: '<span class="glyphicon glyphicon-shopping-cart"></span>{{numberInCart}}'
+        };
     });
