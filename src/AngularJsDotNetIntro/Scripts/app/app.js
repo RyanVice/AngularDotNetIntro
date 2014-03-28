@@ -61,5 +61,7 @@ angular.module('app', [])
                 price: $scope.item.price,
                 quantity: $scope.item.quantity
             });
+
+            $scope.item = {};
         };
     });

@@ -510,4 +510,6 @@ DEMO: Cart Part 4 - Add\Edit
          price: $scope.item.price,
          quantity: $scope.item.quantity
      });
+	 
+	 $scope.item = {};
  };
