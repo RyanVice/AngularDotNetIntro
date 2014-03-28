@@ -26,10 +26,7 @@ angular.module('app', [])
         $scope.editItem = function (index) {
             $scope.updating = true;
 
-            $scope.item.id = $scope.items[index].id;
-            $scope.item.name = $scope.items[index].name;
-            $scope.item.price = $scope.items[index].price;
-            $scope.item.quantity = $scope.items[index].quantity;
+            $scope.item = angular.copy($scope.items[index]);
         };
     })
     .controller('navBarCtrl', function ($scope, cartSrv) {
