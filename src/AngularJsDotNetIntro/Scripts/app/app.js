@@ -38,80 +38,80 @@ angular.module('app', ['ngResource'])
         });
     })
     .factory('cartSrv', function ($resource, $rootScope) {
-        var cartItems = $resource(
-            '/api/CartItems/:id',
-            {},
-            {
-                'get': { method: 'GET', isArray: true }
+        var cartItems = $resource('/api/CartItems/:id', {}, {
+            update: {
+                method: 'PUT'
+            }
+        });
+
+        var getItems = function () {
+            service.items = cartItems.query();
+            service.items.$promise.then(function () {
+                $rootScope.$broadcast('cartUpdated');
             });
+            return promise;
+        }
 
-        var service = {
-            nextItemId: 1,
-            items: {},
-
-            getItems: function () {
-                this.items = cartItems.get();
-                this.items.$promise.then(function () {
-                    $rootScope.$broadcast('cartUpdated');
-                });
-                return promise;
-            },
-
-            getTotal: function () {
-                var total = 0;
-                this.items.forEach(function (item) {
-                    total = total + (item.price * item.quantity);
-                });
-                return total;
-            },
-
-            deleteItem: function (index) {
-                var me = this;
-                cartItems.delete({ id: me.items[index].id })
-                    .$promise.then(function () {
-                        me.getItems();
-                    });
-            },
-
-            updateItem: function (item) {
-                for (var i = 0; i < items.length; i++) {
-                    if (items[i].id === item.id) {
-                        items[i] = item;
-                        break;
-                    }
-                }
-            },
-
-            addItem: function (item) {
-                item.id = nextItemId;
-                if (items === null)
-                    items = [item];
-                else
-                    items.push(item);
-
-                return nextItemId++;
-            },
-
-            emtpyCart: function () {
-                items = null;
-            },
-
-            addItems: function (itemsToAdd) {
-                itemsToAdd.forEach(function (item) {
-                    addItem(item);
-                });
-            },
-
-            getItem: function (id) {
-                for (var i = 0; i < items.length; i++) {
-                    if (items[i].id === id)
-                        return items[i];
-                }
-                return null;
-            },
+        var getTotal = function () {
+            var total = 0;
+            service.items.forEach(function (item) {
+                total = total + (item.price * item.quantity);
+            });
+            return total;
         };
 
-        service.items = cartItems.get();
+        var deleteItem = function (index) {
+            cartItems.delete({ id: service.items[index].id })
+                .$promise.then(function () {
+                    service.getItems();
+                });
+        }
+
+        var updateItem = function (item) {
+            cartItems.update({ id: item.id }, item)
+                .$promise.then(function () {
+                    service.getItems();
+                });
+        };
+
+        var addItem = function (item) {
+            cartItems.save(item)
+                .$promise.then(function () {
+                    service.getItems();
+                });
+        };
+
+        var emtpyCart = function () {
+            service.items = null;
+        };
+
+        var addItems = function (itemsToAdd) {
+            itemsToAdd.forEach(function (item) {
+                addItem(item);
+            });
+        };
+
+        var getItem = function (id) {
+            for (var i = 0; i < service.items.length; i++) {
+                if (items[i].id === id)
+                    return items[i];
+            }
+            return null;
+        };
+
+        var service = {
+            items: {},
+            getItems: getItems,
+            deleteItem: deleteItem,
+            addItem: addItem,
+            updateItem: updateItem,
+            getTotal: getTotal,
+            emtpyCart: emtpyCart,
+            addItems: addItems,
+            getItem: getItem
+        };
+
+        service.items = cartItems.query();
         service.items.$promise.then(function () {
             $rootScope.$broadcast('cartUpdated');
         });

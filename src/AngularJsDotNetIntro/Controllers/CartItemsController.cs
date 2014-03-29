@@ -54,9 +54,10 @@ namespace AngularSpaTest3.Controllers
         // PUT api/values/5
         public void Put(int id, CartItem item)
         {
-            var itemToUpdate = GetItem(id);
-            item.id = id;
-            itemToUpdate = item;
+            var index = CartItems.IndexOf(GetItem(id));
+            CartItems[index].name = item.name;
+            CartItems[index].quantity = item.quantity;
+            CartItems[index].price = item.price;
         }
 
         // DELETE api/values/5
