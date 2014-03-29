@@ -22,7 +22,7 @@ angular.module('app', ['ngResource'])
         $scope.updateItem = function () {
             cartSrv.updateItem($scope.item);
 
-            $scope.item = null;
+            $scope.item = {};
             $scope.updating = false;
         };
 
