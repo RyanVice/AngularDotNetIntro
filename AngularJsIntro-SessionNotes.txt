@@ -94,6 +94,9 @@ DEMO: Compare Input
         });
 })();
 
+// Note about debugging tests with Resharper
+ReSharperReporter.prototype.jasmineDone = function () { };
+
 // test.js - take two
 /// <reference path="../Scripts/angular.js" />
 /// <reference path="../Scripts/angular-resource.min.js" />
@@ -154,23 +157,23 @@ DEMO: Cart Part 1 - Basic Functionality
         <div class="col-md-6">
             <table class="table">
                 <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Quantity</td>
-                    <td>Actions</td>
-                </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>Price</td>
+                        <td>Quantity</td>
+                        <td>Actions</td>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in items">
-                    <td>{{item.name}}</td>
-                    <td>{{item.price | currency}}</td>
-                    <td>{{item.quantity}}</td>
-                    <td>
-                        <button class="button-primary">Delete</button>
-                        <button class="button-primary">Edit</button>
-                    </td>
-                </tr>
+                    <tr ng-repeat="item in items">
+                        <td>{{item.name}}</td>
+                        <td>{{item.price | currency}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>
+                            <button class="btn btn-primary">Delete</button>
+                            <button class="btn btn-primary">Edit</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -223,8 +226,8 @@ DEMO: Cart Part 2 - Total
                         <td>{{item.price | currency}}</td>
                         <td>{{item.quantity}}</td>
                         <td>
-                            <button class="button-primary">Delete</button>
-                            <button class="button-primary">Edit</button>
+                            <button class="btn btn-primary">Delete</button>
+                            <button class="btn btn-primary">Edit</button>
                         </td>
                     </tr>
                 </tbody>
@@ -861,6 +864,22 @@ DEMO: Cart Part 6 - Currency and Directives
         return {
             restrict: 'E',
             template: '<span class="glyphicon glyphicon-shopping-cart"></span>{{numberInCart}}'
+        };
+    });
+
+// alternate directive using compile
+.directive('vCurrency', function () {
+        return {
+            compile: function (element) {
+                element.bind('keypress', function (evt) {
+                    var charCode = (evt.which) ? evt.which : event.keyCode;
+                    if (charCode > 31
+                        && (charCode != 46
+                            && (charCode < 48 || charCode > 57)))
+                        return false;
+                    return true;
+                });
+            }
         };
     });
 	
